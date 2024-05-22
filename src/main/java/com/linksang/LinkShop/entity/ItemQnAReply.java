@@ -7,7 +7,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Data
+@Getter
+@Setter
 @Table(name = "item_qna_reply")
 @Entity
 public class ItemQnAReply extends TimeEntity {

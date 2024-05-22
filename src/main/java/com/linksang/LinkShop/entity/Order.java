@@ -18,7 +18,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@Data
+@Getter
+@Setter
 @Entity
 public class Order {
 

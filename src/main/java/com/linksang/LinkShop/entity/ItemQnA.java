@@ -1,16 +1,14 @@
 package com.linksang.LinkShop.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 @Table(name = "item_qna", indexes = @Index(name = "qnaidx", columnList = "item_id"))
 @Entity
 public class ItemQnA extends TimeEntity {

@@ -3,16 +3,14 @@ package com.linksang.LinkShop.entity;
 
 import com.linksang.LinkShop.enums.DeliveryStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Table(name = "order_item")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Data
+@Getter
+@Setter
 @Entity
 public class OrderItem {
 

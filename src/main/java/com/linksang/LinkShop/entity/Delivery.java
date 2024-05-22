@@ -2,14 +2,12 @@ package com.linksang.LinkShop.entity;
 
 import com.linksang.LinkShop.enums.DeliveryStatus;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Data
+@Getter
+@Setter
 @Table(name = "delivery")
 @Entity
 public class Delivery extends TimeEntity {

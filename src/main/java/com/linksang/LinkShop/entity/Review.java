@@ -7,7 +7,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Data
+@Getter
+@Setter
 @Table(name = "item_review")
 @Entity
 public class Review extends TimeEntity {

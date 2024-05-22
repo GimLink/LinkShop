@@ -2,10 +2,7 @@ package com.linksang.LinkShop.entity;
 
 import com.linksang.LinkShop.enums.Role;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,7 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 @Builder
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

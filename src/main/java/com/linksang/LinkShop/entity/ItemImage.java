@@ -7,7 +7,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-@Data
+@Getter
+@Setter
 @Table(name = "item_image", indexes = @Index(name = "itemId_idx", columnList = "item_id"))
 @Entity
 public class ItemImage extends TimeEntity {

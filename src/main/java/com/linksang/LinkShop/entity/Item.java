@@ -3,10 +3,7 @@ package com.linksang.LinkShop.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +11,8 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Table(name = "item", indexes = @Index(name = "idx_item", columnList = "itemName, category, salesStatus"))
 @Entity
 public class Item extends TimeEntity {
