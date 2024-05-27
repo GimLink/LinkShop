@@ -24,12 +24,12 @@ public class ItemRepositoryImpl implements ItemRepositoryCustom{
     @Override
     public Long searchTotal(String itemName, String category, String saleStatus) {
         return queryFactory
-                .select(QItem.item.id)
+                .select(QItem.item.id.count())
                 .from(QItem.item)
                 .where(equalItemName(itemName),
                         equalCategory(category),
                         equalSaleStatus(saleStatus))
-                .fetchCount();
+                .fetchOne();
     }
 
     @Override
