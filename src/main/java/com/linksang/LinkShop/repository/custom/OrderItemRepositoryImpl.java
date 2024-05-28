@@ -3,7 +3,6 @@ package com.linksang.LinkShop.repository.custom;
 import com.linksang.LinkShop.DTO.OrderItemDto;
 import com.linksang.LinkShop.DTO.SearchDto;
 import com.linksang.LinkShop.entity.Member;
-import com.linksang.LinkShop.entity.QOrder;
 import com.linksang.LinkShop.entity.QOrderItem;
 import com.linksang.LinkShop.enums.DeliveryStatus;
 import com.querydsl.core.types.Projections;
@@ -34,7 +33,6 @@ public class OrderItemRepositoryImpl implements OrderitemRepositoryCustom{
                         equalCustomerName(searchDto.getCustomerName()),
                         equalOrderNum(searchDto.getOrderNum()),
                         equalItemName(searchDto.getItemName())
-
                 )
                 .fetchOne();
     }
@@ -90,12 +88,45 @@ public class OrderItemRepositoryImpl implements OrderitemRepositoryCustom{
 
     @Override
     public List<OrderItemDto> searchAllByDeliveryStatusAndSearchDto(DeliveryStatus deliveryStatus, SearchDto searchDto, Pageable pageable) {
-        return null;
+
+        List<Long> ids = queryFactory
+                .select(QOrderItem.orderItem.id)
+                .from(QOrderItem.orderItem)
+                .where(
+                        QOrderItem.orderItem.deliveryStatus.eq(deliveryStatus),
+                        equalSearchDto(searchDto)
+                )
+                .orderBy(QOrderItem.orderItem.id.desc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+
+        if(CollectionUtils.isEmpty(ids)) return null;
+
+        return queryFactory.select(Projections.fields(OrderItemDto.class,
+                QOrderItem.orderItem.id,
+                QOrderItem.orderItem.order,
+                QOrderItem.orderItem.item,
+                QOrderItem.orderItem.totalPrice,
+                QOrderItem.orderItem.deliveryStatus,
+                QOrderItem.orderItem.quantity,
+                QOrderItem.orderItem.wayBillNum
+        ))
+                .from(QOrderItem.orderItem)
+                .where(QOrderItem.orderItem.id.in(ids))
+                .orderBy(QOrderItem.orderItem.id.desc())
+                .fetch();
     }
 
     @Override
     public List<OrderItemDto> searchAllByMember(Member member) {
-        return null;
+        return queryFactory
+                .select(Projections.fields(OrderItemDto.class,
+                        QOrderItem.orderItem.id,
+                        QOrderItem.orderItem.item))
+                .from(QOrderItem.orderItem)
+                .where(QOrderItem.orderItem.order.member.eq(member))
+                .fetch();
     }
 
     private BooleanExpression equalCustomerName(String customerName) {
