@@ -6,6 +6,7 @@ import com.linksang.LinkShop.entity.Item;
 import com.linksang.LinkShop.entity.Member;
 import com.linksang.LinkShop.enums.Sns;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 
@@ -28,13 +29,13 @@ public interface MemberService {
 
     boolean checkAuthNum(String phoneNum, String authNum);
 
-    void setAuthCheck(String phoneNum);
+    void setAuthCheck(String phoneNum) throws Exception;
 
     void saveWithdrawalMember(String userId);
 
     void login(String userId);
 
-    void withDrawal(String userId);
+    void withdrawal(String userId);
 
     Member joinNormal(Member member);
 
@@ -48,6 +49,6 @@ public interface MemberService {
 
     List<MemberDto> findAll(Pageable pageable);
 
-    List<String> findALlByPhoneNum(String phoneNum);
+    List<String> findAllByPhoneNum(String phoneNum);
 
 }
