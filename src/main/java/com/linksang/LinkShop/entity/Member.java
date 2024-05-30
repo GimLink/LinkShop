@@ -1,6 +1,7 @@
 package com.linksang.LinkShop.entity;
 
 import com.linksang.LinkShop.enums.Role;
+import com.linksang.LinkShop.enums.Sns;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,6 +32,10 @@ public class Member {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @Column(length = 15, nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Sns sns;
 
     @Column(length = 11)
     private String phoneNum;
