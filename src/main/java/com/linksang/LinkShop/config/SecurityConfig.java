@@ -66,11 +66,11 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailService).passwordEncoder(bCryptPasswordEncoder);
-        return auth.build();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder auth) throws Exception {
+//        auth.userDetailsService(userDetailService).passwordEncoder(bCryptPasswordEncoder);
+//        return auth.build();
+//    }
 
 //    private AuthenticationFilter getAuthenticationFilter() throws Exception {
 //        AuthenticationFilter authenticationFilter = new AuthenticationFilter();
