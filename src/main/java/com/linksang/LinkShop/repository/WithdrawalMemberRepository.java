@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface WithdrawalMemberRepository extends JpaRepository<WithdrawalMember, Long> {
 
-    boolean existByUserId(String userId);
+    boolean existsByUserId(String userId);
 }
