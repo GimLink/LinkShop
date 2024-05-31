@@ -11,7 +11,8 @@ public class LinkShopApplication {
 
 	private static final String YMLS = "spring.config.location=" +
 			"classpath:/application.yml," +
-			"classpath:/aws.yml"
+			"classpath:/aws.yml," +
+			"classpath:/redis.yml"
 			;
 
 	public static void main(String[] args) {
