@@ -56,6 +56,8 @@ public class MemberServiceImpl implements MemberService {
 
         return orderItemList.stream()
                 .anyMatch(i -> i.getItem().getId().equals(item.getId()));
+
+        //리뷰 작성할 때 이 사람이 물건 산사람인지 확인용
     }
 
     @Override
@@ -102,6 +104,8 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return userIdList;
+
+        //아이디 찾기용
     }
 
     @Override
@@ -113,7 +117,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public boolean existsWithdrawalByUserId(String userId) {
-        return withdrawalMemberRepository.existByUserId(userId);
+        return withdrawalMemberRepository.existsByUserId(userId);
     }
 
     @Override
@@ -200,7 +204,7 @@ public class MemberServiceImpl implements MemberService {
         //회원가입시 validator로 검증하지 못한 부분 유효성 검사
 
         boolean findMember = memberRepository.existsByUserId(dto.getUserId());
-        boolean findWithdrawalMember = withdrawalMemberRepository.existByUserId(dto.getUserId());
+        boolean findWithdrawalMember = withdrawalMemberRepository.existsByUserId(dto.getUserId());
 
         int authNum = redisService.getAuthNum(dto.getPhoneNum());
         int authNumCheckResult = redisService.authNumCheck(dto.getPhoneNum(), dto.getAuthNum());
@@ -226,7 +230,7 @@ public class MemberServiceImpl implements MemberService {
 
         int authNumResult = redisService.authNumCheck(phoneNum, dtoAuthNum);
         boolean findMember = memberRepository.existsByUserId(dto.getUserId());
-        boolean findWithdrawalMember = withdrawalMemberRepository.existByUserId(dto.getUserId());
+        boolean findWithdrawalMember = withdrawalMemberRepository.existsByUserId(dto.getUserId());
 
         if (findMember || findWithdrawalMember) {
             model.addAttribute("valid_userId", "이미 사용중이거나 탈퇴한 아이디입니다.");
