@@ -1,6 +1,7 @@
 package com.linksang.LinkShop.service;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.linksang.LinkShop.DTO.CartItemDto;
@@ -61,7 +62,7 @@ public class CartServiceImpl implements CartService{
                 () -> new CartNotFoundException("존재하지 않는 장바구니입니다."));
         CartItem cartItem = cartItemRepository.findByCartAndItem(cart, item);
 
-        //장바구니에 상품이 존재하지 않으면 만들고 있으면 수량 추가
+        //장바구니에 상품이 존재하지 않으면 추가하고 있으면 수량 추가
         if (cartItem == null) {
             cartItem = CartItem.createCartItem(cart, item, quantity);
         } else {
@@ -93,8 +94,8 @@ public class CartServiceImpl implements CartService{
     @Override
     public List<OrderItemDto> cartItemToPayment(String cartIdList, HttpSession session) {
 
-        JsonParser jsonParser = new JsonParser();
-        JsonArray jsonElements = (JsonArray) JsonParser.parseString(cartIdList);
+        JsonElement jsonElement = JsonParser.parseString(cartIdList);
+        JsonArray jsonElements = jsonElement.getAsJsonArray();
 
         List<Long> cartItemIdList = new ArrayList<>();
         List<OrderItemDto> orderItemDtoList = new ArrayList<>();
@@ -108,7 +109,7 @@ public class CartServiceImpl implements CartService{
         session.setAttribute("cartItemIdList", cartItemIdList);
 
         for (int i = 0; i < cartItemIdList.size(); i++) {
-            CartItem cartItem = cartItemRepository.findById(i).orElseThrow(
+            CartItem cartItem = cartItemRepository.findById(cartItemIdList.get(i)).orElseThrow(
                     () -> new ItemNotFoundException("해당 장바구니 상품이 존재하지 않습니다."));
 
             OrderItemDto orderItemDto = OrderItemDto.builder()
@@ -123,17 +124,22 @@ public class CartServiceImpl implements CartService{
     }
 
     @Override
+    @Transactional
     public void deleteCartItem(Long id) {
+        cartItemRepository.deleteById(id);
 
     }
 
     @Override
+    @Transactional
     public void deleteCartItemAll(List<Long> id) {
-
+        cartItemRepository.deleteAllById(id);
     }
 
     @Override
     public void updateQuantity(Long id, int quanntity) {
-
+        CartItem cartItem = cartItemRepository.findById(id).orElseThrow(()-> new CartNotFoundException("존재하지 않는 장바구니 상품입니다."));
+        cartItem.setQuantity(quanntity);
+        cartItem.setTotalPrice(cartItem.getItem().getPrice() + quanntity);
     }
 }
