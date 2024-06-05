@@ -6,10 +6,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.linksang.LinkShop.DTO.AddressDto;
 import com.linksang.LinkShop.DTO.OrderDto;
 import com.linksang.LinkShop.DTO.OrderItemDto;
+import com.linksang.LinkShop.DTO.OrderPaymentInfoDto;
 import com.linksang.LinkShop.entity.*;
 import com.linksang.LinkShop.enums.DeliveryStatus;
+import com.linksang.LinkShop.enums.PayType;
 import com.linksang.LinkShop.exception.ItemNotFoundException;
 import com.linksang.LinkShop.exception.OrderNotFoundException;
 import com.linksang.LinkShop.repository.DeliveryRepository;
@@ -20,6 +23,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -105,7 +109,7 @@ public class OrderServiceImpl implements OrderService{
 
         JsonElement jsonElement = JsonParser.parseString(itemList);
         JsonArray jsonElements = jsonElement.getAsJsonArray();
-        JsonObject jsonItem = (JsonObject) jsonElements.get(0);
+        JsonObject jsonItem = (JsonObject) jsonElements.get(0); //상품 페이지에서 바로 구매시 사용하는 메서드라 0번째 하나만 있으면 ok
 
         Long itemId = Long.parseLong(jsonItem.get("itemId").getAsString());
         int quantity = Integer.parseInt(jsonItem.get("quantity").getAsString());
@@ -152,31 +156,103 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public OrderPaymentInformation getVirtualAccountInfo(JsonNode successNode) {
-        return null;
+
+        JsonNode virtualAccount = successNode.get("virtualAccount");
+
+        return OrderPaymentInformation.builder()
+                .payType(PayType.VIRTUAL_ACCOUNT.getTitle())
+                .customerName(virtualAccount.get("customerName").asText())
+                .accountNumber(virtualAccount.get("accountnumber").asText())
+                .bank(virtualAccount.get("bank").asText())
+                .dueDate(virtualAccount.get("dueDate").asText())
+                .build();
     }
 
     @Override
+    @Transactional
     public String doOrder(HttpSession session, OrderPaymentInformation paymentInfo, Delivery delivery) {
-        return null;
+
+        //배송정보 가져오기
+        String orderNum = (String) session.getAttribute("orderNum");
+        String orderName = (String) session.getAttribute("orderName");
+        List<OrderItemDto> itemList = (List<OrderItemDto>) session.getAttribute("orderItems");
+        List<Long> cartItemIdList = (List<Long>) session.getAttribute("cartItemIdList");
+        AddressDto addressDto = (AddressDto) session.getAttribute("addressDto");
+        PayType payType = (PayType) session.getAttribute("payType");
+
+        //order 객체 만들기용
+        Member member = memberService.getCurrentMember();
+        List<OrderItem> orderItems = itemList.stream()
+                .map(i -> mapper.map(i, OrderItem.class)).toList();
+
+        //배송정보
+        delivery.setDeliveryAddress(mapper.map(addressDto, DeliveryAddress.class));
+        delivery.setOrderName(orderName);
+
+        //주문
+        Order order = Order.createOrder(member, delivery, orderItems, payType, paymentInfo, orderNum);
+        orderRepository.save(order);
+
+        //장바구니에서 주문시 장바구니서 삭제
+        if (cartItemIdList != null) {
+            cartService.deleteCartItemAll(cartItemIdList);
+            session.removeAttribute("cartItemId");
+        }
+
+        //세션에서 주문정보 삭제
+        session.removeAttribute("orderNum");
+        session.removeAttribute("orderName");
+        session.removeAttribute("orderItems");
+        session.removeAttribute("addressDto");
+        session.removeAttribute("payType");
+        session.removeAttribute("totalPrice");
+
+        return orderNum;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Model getModelPayInfo(Order order, Model model) {
-        return null;
+        mapper.getConfiguration().setAmbiguityIgnored(true);
+
+        OrderPaymentInfoDto payInfo = mapper.map(order.getPaymentInfo(), OrderPaymentInfoDto.class);
+        OrderDto orderInfo = mapper.map(order, OrderDto.class);
+        AddressDto address = mapper.map(order.getDelivery().getDeliveryAddress(), AddressDto.class);
+        List<OrderItemDto> orderItems = order.getOrderItems().stream()
+                .map(i -> mapper.map(i, OrderItemDto.class)).toList();
+
+        model.addAttribute("orderInfo", orderInfo);
+        model.addAttribute("payInfo", payInfo);
+        model.addAttribute("address", address);
+        model.addAttribute("orderItems", orderItems);
+        model.addAttribute("method", payInfo.getPayType());
+
+        return model;
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OrderDto> searchAllByMember(Long lastOrderId, Member member) {
-        return null;
+
+        List<Order> orderList = orderRepository.searchAllByMember(lastOrderId, member);
+
+        return orderList.stream().map(i-> mapper.map(i, OrderDto.class)).toList();
     }
 
     @Override
+    @Transactional
     public void updateOrderToDepositSuccess(String orderNum) {
 
+        Order order = orderRepository.findByOrderNum(orderNum)
+                .orElseThrow(() -> new OrderNotFoundException("해당 주문은 존재하지 않습니다."));
+        order.getDelivery().setDeliveryStatus(DeliveryStatus.DEPOSIT_SUCCESS);
+        order.setDepositDate(LocalDateTime.now());
     }
 
     @Override
-    public List<OrderDto> searchByDeliveryStatus(DeliveryStatus status) {
-        return null;
+    @Transactional(readOnly = true)
+    public List<OrderDto> searchByDeliveryStatus(DeliveryStatus status, Pageable pageable) {
+
+        return orderRepository.searchByDeliveryStatus(status, pageable);
     }
 }

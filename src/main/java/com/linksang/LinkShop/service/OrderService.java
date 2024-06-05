@@ -9,6 +9,7 @@ import com.linksang.LinkShop.entity.Order;
 import com.linksang.LinkShop.entity.OrderPaymentInformation;
 import com.linksang.LinkShop.enums.DeliveryStatus;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
@@ -41,5 +42,5 @@ public interface OrderService {
 
     void updateOrderToDepositSuccess(String orderNum);
 
-    List<OrderDto> searchByDeliveryStatus(DeliveryStatus status);
+    List<OrderDto> searchByDeliveryStatus(DeliveryStatus status, Pageable pageable);
 }
