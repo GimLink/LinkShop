@@ -66,4 +66,35 @@ public class Member {
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "member")
     private Set<Review> reviewList = new HashSet<>();
+
+    public void addReviewList(Review review) {
+        this.getReviewList().add(review);
+        review.setMember(this);
+    }
+
+    public void addQnaList(ItemQnA qnaItem) {
+        this.getQnaList().add(qnaItem);
+        qnaItem.setMember(this);
+    }
+
+    public void addQnaReplyList(ItemQnAReply qnaReply){
+        this.getQnaReplyList().add(qnaReply);
+        qnaReply.setMember(this);
+    }
+
+    public void addBoardList(Board board){
+        this.getBoardList().add(board);
+        board.setMember(this);
+    }
+
+    public void addBoardCommentList(BoardComment comment){
+        this.getBoardCommentList().add(comment);
+        comment.setMember(this);
+    }
+
+    public void addBoardReCommentList(BoardReComment reComment){
+        this.getBoardReCommentList().add(reComment);
+        reComment.setMember(this);
+    }
+
 }
