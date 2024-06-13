@@ -22,13 +22,13 @@ public class MessageService {
 
     private static final Logger log = LoggerFactory.getLogger(MessageService.class);
 
-    @Value("${coolsms.apiKey}")
+    @Value("${coolsms.api.key}")
     String apiKey;
 
-    @Value("${coolsms.apiSecret}")
+    @Value("${coolsms.api.secret}")
     String apiSecret;
 
-    @Value("${coolsms.fromNumber}")
+    @Value("${coolsms.api.fromNumber}")
     String fromNumber;
 
     private DefaultMessageService messageService;
