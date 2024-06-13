@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+
+<div class="col-md-6 col-lg-4" th:each="item : ${itemList}">
+  <a th:href="@{'/items/' + ${item.id}}">
+    <div class="box">
+      <div class="img-box">
+        <img src="#" th:src="@{${item.imageUrl}}" alt="">
+      </div>
+      <div class="detail-box">
+        <h6 th:text="${item.itemName}"></h6>
+        <div class="price_box">
+          <strong class="price_heading" th:text="${item.price}"></strong>
+        </div>
+      </div>
+    </div>
+  </a>
+</div>
+<div class="btn-box">
+  <a href="javascript:void(0);" class="itemMore" th:attr="data-value=${value}">
+    더보기
+  </a>
+</div>
+
+</body>
+</html>

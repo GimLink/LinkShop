@@ -81,7 +81,7 @@ public class ItemServiceImpl implements ItemService{
                 String originalImageName = fileList.get(i).getOriginalFilename();
                 String imageName = awsS3Service.createFileName(originalImageName);
 
-                String filePath = "static/images/" + itemDto.getCategory() + "/" + itemDto.getItemName() + "/" + imageName;
+                String filePath = "static/assets/images/" + itemDto.getCategory() + "/" + itemDto.getItemName() + "/" + imageName;
 
                 String s3ImageUrl = awsS3Service.upload(fileList.get(i), filePath);
 
