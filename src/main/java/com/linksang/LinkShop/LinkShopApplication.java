@@ -13,7 +13,8 @@ public class LinkShopApplication {
 			"classpath:/application.yml," +
 			"classpath:/aws.yml," +
 			"classpath:/redis.yml," +
-			"classpath:/toss.yml"
+			"classpath:/toss.yml," +
+			"classpath:/coolsms.yml"
 			;
 
 	public static void main(String[] args) {
