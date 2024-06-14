@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.CsrfConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -24,7 +25,6 @@ public class SecurityConfig {
 
     private final CustomUserDetailService userDetailService;
     private final CustomLoginFailureHandler failureHandler;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final ObjectPostProcessor<Object> objectPostProcessor;
 
     @Bean
@@ -49,8 +49,8 @@ public class SecurityConfig {
                     .loginProcessingUrl("/login")
                     .defaultSuccessUrl("/")
                     .usernameParameter("userId")
-                    .successHandler(successHandler())
-                    .failureHandler(failureHandler);
+                    .successHandler(successHandler());
+//                    .failureHandler(failureHandler);
         });
 
 
@@ -81,5 +81,10 @@ public class SecurityConfig {
 
     @Bean
     public AuthenticationSuccessHandler successHandler() {return new CustomLoginSuccessHandler("/");}
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 
 }
