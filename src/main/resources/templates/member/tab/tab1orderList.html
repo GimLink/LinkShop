@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+<th:block th:if="${orderList}">
+  <div class="mypage_orderList">
+    <input type="hidden" id="lastOrderId" th:value="${lastOrderId}">
+    <div th:each="order : ${orderList}" class="mypage_order_item_wrap">
+      <h2>
+        <span th:text="${#temporals.format(order.createdDate, 'yyyy.MM.dd')}"></span>
+        <span>ㅣ</span>
+        <span th:text="${order.orderNum}"></span>
+        <a th:href="@{/member/orderDetails/}+${order.id}" class="btn_showdetailorder">주문상세보기></a>
+      </h2>
+      <div th:each="orderItem : ${order.orderItems}" class="order_item">
+        <dl>
+          <dt>주문 상품 정보</dt>
+          <dt></dt>
+          <dt>주문 금액</dt>
+          <dt>진행상황</dt>
+        </dl>
+        <dl>
+          <dd>
+            <a th:href="@{'/items/' + ${orderItem.item.id}}">
+              <img th:src="@{${orderItem.item.imageUrl}}">
+            </a>
+          </dd>
+          <dd>
+            <a th:href="@{'/items/' + ${orderItem.item.id}}">
+              <span th:text="${orderItem.item.itemName}" class="itemname"></span>
+            </a>
+            <span th:text="${orderItem.item.color} + ${orderItem.item.size}"></span>
+            <span th:text="${orderItem.quantity} + '개'"></span>
+          </dd>
+          <dd>
+            <strong th:text="${#numbers.formatDecimal(orderItem.totalPrice, 0, 'COMMA', 0, 'POINT')} + '원'"></strong>
+          </dd>
+          <dd>
+                    <span class="status_name">
+                       <strong th:text="${orderItem.deliveryStatus.getValue}"></strong>
+                   </span>
+          </dd>
+        </dl>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="moreOrder" th:if="${lastOrderId}">주문 상품 더보기</button>
+  </div>
+</th:block>
+
+<th:block th:unless="${orderList}">
+  <div class="mypage_orderList">
+    <h2>주문 상품이 존재하지 않습니다.</h2>
+  </div>
+</th:block>
+</body>
+</html>

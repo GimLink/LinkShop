@@ -1,0 +1,350 @@
+a:link {
+    text-decoration: none;
+}
+
+.frame {
+    width: 100%;
+    max-width: 1300px;
+    margin: 0px auto;
+    clear: both;
+    overflow: hidden;
+}
+
+.mypage_order_item_wrap h2 {
+    font-weight: 200;
+    font-size: 1.8em;
+    border-bottom: 1px solid #000;
+    padding-bottom: 16px;
+    margin-top: 50px;
+}
+
+.mypage_order_item_wrap:first-child {
+    margin-top: 100px;
+}
+
+.mypage_order_item_wrap {
+    margin-bottom: 100px;
+}
+
+.mypage_order_item_wrap a:hover {
+    color : red;
+}
+
+.orderpage h2 {
+    font-weight: 300;
+    font-size: 2em;
+    border-bottom: 1px solid #000;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    margin-top: 50px;
+}
+
+.orderpage h2 {
+    margin-bottom: 0px;
+}
+
+.btn_showdetailorder {
+    float: right;
+    color: #000000;
+    font-size: 1em;
+    font-weight: 300;
+}
+
+.orderpage h2 > span {
+    font-size: 22px;
+    float: none;
+}
+
+.order_item {
+
+    display : table;
+    width : 100%;
+}
+
+.order_item dl {
+
+    width: 100%;
+    display: table-row;
+}
+
+.order_item dl dt:first-child {
+
+    padding: 20px 10px;
+}
+
+.order_item dl dt {
+    padding-bottom: 10px;
+    font-size: 1.3em;
+    font-weight: bold;
+    text-align: center;
+}
+
+.order_item dd, .order_item dt {
+    display: table-cell;
+    vertical-align: middle;
+    border-bottom: 1px solid #ccc;
+    padding: 10px;
+}
+
+.order_item a, .order_item a:link {
+    color: #000000;
+}
+
+
+.order_item dd:first-child img {
+    width: 100px;
+    height : 100px;
+}
+
+.order_item dd:first-child img {
+    width: 100%;
+    max-width: 100px;
+}
+
+.order_item dl dd:first-child {
+    width: 15%;
+}
+
+.order_item dl dd {
+    font-size: 1.25em;
+}
+
+.order_item .itemname {
+    font-weight: 400;
+    font-size: 1.2em;
+}
+
+.order_item .itemname {
+    font-size: 1.3em;
+    font-weight: 500;
+    color: #000;
+}
+
+.order_item dd span {
+    color: #767676;
+    font-weight: 300;
+    font-size: 1em;
+    display: block;
+}
+
+
+.order_item dl dd:nth-child(3) {
+    font-size: 1.3em;
+    font-weight: 500;
+}
+
+.order_item dl dd:nth-child(3) {
+    width: 20%;
+    text-align: center;
+}
+
+.order_item dl dd:nth-child(4) {
+    width: 15%;
+    text-align: center;
+}
+
+.order_item .status_name {
+    display: inline-block;
+    color: #000000;
+}
+
+
+/*  myPage qnaList 부분    -----------------------------------        */
+
+.myqna_list {
+    border: none;
+}
+
+.myqna_list {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+
+    border-bottom: 1px solid #ccc;
+}
+
+/*.myqna_list {
+    display: block;
+    border-bottom: 1px solid #ccc;
+}*/
+
+.myqna_list .qna_tit_area span {
+    display: table-cell;
+    padding: 20px 10px;
+    font-weight: 700;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.myqna_list .qna_tit_area {
+    display: table-row;
+}
+
+.myqna_list .qna_tit_area span.condition {
+    width: 18%;
+}
+
+.myqna_list .qna_tit_area span.contents {
+    width: auto;
+}
+
+.myqna_list .qna_tit_area span.date, .myqna_list .qna_tit_area span.writer {
+    width: 18%;
+}
+
+
+
+/* 질문 타이틀 ----------------- */
+.qna_content.qna_content_on {
+    background: #f7f8fa;
+}
+
+.qna_content {
+    display: table-row-group;
+    border-top: 0;
+    cursor: pointer;
+}
+
+.qna_content .qna_title {
+    display: table-row;
+    padding: 12px 16px;
+}
+
+.qna_content .qna_title>span.condition {
+    font-weight: 700;
+}
+
+.qna_content .qna_title>span {
+    padding: 14px 0 18px;
+    font-size: 16px;
+    text-align: center;
+    border-top: 1px solid #e1e1e1;
+    cursor: pointer;
+}
+
+.qna_content .qna_title>span[data-v-2fd56802] {
+    display: block;
+    font-size: 12px;
+}
+
+.qna_content .qna_title>span.date, .qna_content .qna_title>span.writer {
+    display: none;
+}
+
+.qna_content .qna_title>span.contents {
+    display: table-cell;
+    width: auto;
+    text-align: left;
+}
+
+.qna_content .qna_title>span.contents {
+    margin-top: 12px;
+    word-break: break-all;
+}
+
+.qna_content .qna_title>span.condition, .qna_content .qna_title>span.date, .qna_content .qna_title>span.writer {
+    display: table-cell;
+    width: 18%;
+}
+
+/* 질문 타이틀안에 질문  -------------------- */
+.qna_content .qna_answer, .qna_content .qna_question {
+    display: none;
+}
+
+.qna_content .qna_question>span.condition, .qna_content .qna_question>span.writer {
+    display: none;
+}
+
+.qna_content .qna_question {
+    display: none;
+    padding: 12px 16px;
+    border-top: 1px solid #e1e1e1;
+}
+
+.qna_content .qna_answer>span.condition, .qna_content .qna_answer>span.date,
+.qna_content .qna_answer>span.writer, .qna_content .qna_question>span.condition,
+.qna_content .qna_question>span.date, .qna_content .qna_question>span.writer {
+    display: table-cell;
+    width: 18%;
+    text-align: center;
+    min-width: 200px;
+}
+
+
+.qna_content .qna_answer>span,
+.qna_content .qna_question>span {
+    padding: 14px 0 18px;
+    font-size: 16px;
+    text-align: center;
+    border-top: 1px solid #e1e1e1;
+    cursor: pointer;
+}
+
+.qna_content .qna_answer>span.contents, .qna_content .qna_question>span.contents {
+    display: table-cell;
+    width: auto;
+    text-align: left;
+}
+
+.qna_content .qna_question>span.contents {
+    word-break: break-all;
+}
+
+.qna_content .qna_question>span.date {
+    margin-top: 16px;
+    text-align: right;
+}
+
+/* 답변 */
+.qna_content.qna_content_on .qna_answer, .qna_content.qna_content_on .qna_question {
+    display: table-row;
+}
+
+.qna_content .qna_answer>span.date, .qna_content .qna_answer>span.writer {
+    float: none;
+}
+
+.qna_content .qna_answer {
+    overflow: hidden;
+    display: none;
+    padding: 12px 16px;
+    border-top: 1px solid #e1e1e1;
+}
+
+.qna_content .qna_answer>span.condition {
+    display: none;
+    word-break: break-all;
+}
+
+.qna_content .qna_answer>span.condition,
+.qna_content .qna_answer>span.date,
+.qna_content .qna_answer>span.writer,
+.qna_content .qna_question>span.condition,
+.qna_content .qna_question>span.date,
+.qna_content .qna_question>span.writer {
+    display: table-cell;
+    width: 18%;
+    text-align: center;
+    min-width: 200px;
+}
+
+
+
+
+.qna_content .qna_answer>span, .qna_content .qna_question>span {
+    padding: 14px 0 18px;
+    font-size: 16px;
+    text-align: center;
+    border-top: 1px solid #e1e1e1;
+    cursor: pointer;
+}
+
+.qna_content .qna_answer>span.contents{
+    clear: both;
+    margin-bottom: 24px;
+}
+
+
+
+
