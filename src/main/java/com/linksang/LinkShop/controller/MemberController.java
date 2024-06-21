@@ -1,15 +1,13 @@
 package com.linksang.LinkShop.controller;
 
-import com.linksang.LinkShop.DTO.ItemQnADto;
-import com.linksang.LinkShop.DTO.ItemQnAReplyDto;
-import com.linksang.LinkShop.DTO.OrderDto;
-import com.linksang.LinkShop.DTO.OrderItemDto;
+import com.linksang.LinkShop.DTO.*;
 import com.linksang.LinkShop.entity.Member;
 import com.linksang.LinkShop.entity.Order;
 import com.linksang.LinkShop.enums.Sns;
 import com.linksang.LinkShop.repository.ItemQnARepository;
 import com.linksang.LinkShop.service.*;
 import com.linksang.LinkShop.util.CommonService;
+import com.linksang.LinkShop.util.ValidationSequence;
 import io.swagger.annotations.ApiOperation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,11 +18,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -177,5 +178,87 @@ public class MemberController {
         return "member/tab/tab2qnaList";
     }
 
+    @DeleteMapping("/mypage/qna/delete")
+    @ApiOperation(value = "qna 삭제")
+    public @ResponseBody String qnaDelete(@RequestParam List<Long> qnaIdList) {
 
+        itemQnAService.deleteAllById(qnaIdList);
+
+        return "success";
+    }
+
+    @GetMapping("/member/idConfirm")
+    @ApiOperation(value = "아이디 중복검사")
+    public @ResponseBody String idConfirm(@RequestParam(name = "userId") String userId) {
+        boolean member = memberService.existsByUserId(userId);
+        boolean withdrawalMember = memberService.existsWithdrawalByUserId(userId);
+
+        if (!member && !withdrawalMember) return "Y";
+        else return "N";
+    }
+
+    @GetMapping("/member/sendAuth")
+    @ApiOperation(value = "인증번호 전송")
+    public @ResponseBody String sendAuth(@RequestParam(name = "phoneNum") String phoneNum) throws Exception {
+
+        boolean result = messageService.phoneValidationCheck(phoneNum);
+        int randomNum = messageService.randomNum();
+
+        if (!result) return "N";
+
+        redisService.setAuthNo(phoneNum, randomNum);
+        messageService.sendMessage(phoneNum, randomNum);
+        return "Y";
+    }
+
+    @GetMapping("/member/authNumCheck")
+    @ApiOperation(value = "회원가입 인증번호 검사")
+    public @ResponseBody String authNumCheck(@RequestParam(value = "authNum") String authNum,
+                                             @RequestParam(value = "phoneNum") String phoneNum) {
+
+        int result = redisService.authNumCheck(phoneNum, authNum);
+
+
+        switch (result) {
+            case 1 -> {
+                return "Y";
+            }
+            case 2 -> {
+                return "N";
+            }
+            case 3 -> {
+                return "cnt";
+            }
+            default -> {
+                break;
+            }
+        }
+        return "cnt";
+    }
+
+    @PostMapping("/join")
+    @ApiOperation(value = "일반 회원가입")
+    public String join(@ModelAttribute("member") @Validated(ValidationSequence.class) JoinMemberDto joinMemberDto,
+                       BindingResult errors, Model model) {
+
+        if (errors.hasErrors()) {
+            Map<String, String> errorsMessageMap = memberService.getErrorMsg(errors);
+            for (String key : errorsMessageMap.keySet()) {
+                model.addAttribute(key, errorsMessageMap.get(key));
+            }
+            return "member/member_join";
+        }
+        int checkResult = memberService.joinValidationCheck(joinMemberDto);
+        if (checkResult == -1) {
+            model.addAttribute(memberService.createJoinDtoErrorMsg(joinMemberDto, model));
+            return "member/member_join";
+        }
+
+        Member member = mapper.map(joinMemberDto, Member.class);
+        cartService.createCart(member);
+        memberService.joinNormal(member);
+
+        return "redirect:/";
+
+    }
 }
