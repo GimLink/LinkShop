@@ -23,7 +23,7 @@
 
       <div class="login-page">
         <div class="form">
-          <form class="login-form" method="POST" action="/login" id="login_form">
+          <form class="login-form" method="POST" action="/loginProc" id="login_form">
             <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" />
 
             <input type="text" id="userId" name="userId" th:value="${userId}" placeholder="아이디" maxlength="20" autocomplete="off"/>

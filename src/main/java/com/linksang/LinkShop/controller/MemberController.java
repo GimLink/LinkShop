@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
@@ -49,6 +51,16 @@ public class MemberController {
         return "member/member_join";
     }
 
+//    @RequestMapping("/login")
+    @ApiOperation(value = "로그인 페이지")
+    public String login(HttpServletRequest request) {
+
+        String referer = request.getHeader("Referer");
+        request.getSession().setAttribute("prevPage", referer);
+
+        return "member/member_login";
+    }
+
     @RequestMapping("/login")
     @ApiOperation(value = "로그인 페이지")
     public String login(HttpServletRequest request, Model model) {
@@ -56,6 +68,9 @@ public class MemberController {
         String userId = (String) request.getAttribute("userId");
         String password = (String) request.getAttribute("password");
         String failMessage = (String) request.getAttribute("LoginFailureMessage");
+
+        log.info("fail message is " + failMessage);
+        log.info("userId is " + userId);
 
         model.addAttribute("userId", userId);
         model.addAttribute("password", password);

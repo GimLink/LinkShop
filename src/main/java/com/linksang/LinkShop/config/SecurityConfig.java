@@ -2,6 +2,7 @@ package com.linksang.LinkShop.config;
 
 import com.linksang.LinkShop.service.CustomUserDetailService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,8 +15,10 @@ import org.springframework.security.config.annotation.web.configurers.CsrfConfig
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
@@ -23,9 +26,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final CustomUserDetailService userDetailService;
     private final CustomLoginFailureHandler failureHandler;
-    private final ObjectPostProcessor<Object> objectPostProcessor;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -37,6 +38,8 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .requestMatchers("/**").permitAll());
 
+
+
         http.csrf(CsrfConfigurer::disable);
 
         http.exceptionHandling(ex -> {
@@ -46,11 +49,11 @@ public class SecurityConfig {
         http.formLogin(form -> {
             form
                     .loginPage("/login")
-                    .loginProcessingUrl("/login")
+                    .loginProcessingUrl("/loginProc")
                     .defaultSuccessUrl("/")
                     .usernameParameter("userId")
-                    .successHandler(successHandler());
-//                    .failureHandler(failureHandler);
+                    .successHandler(successHandler())
+                    .failureHandler(failureHandler);
         });
 
 
@@ -61,14 +64,12 @@ public class SecurityConfig {
                     .logoutSuccessUrl("/");
         });
 
-
-
         return http.build();
     }
 
 //    @Bean
 //    public AuthenticationManager authenticationManager(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.userDetailsService(userDetailService).passwordEncoder(bCryptPasswordEncoder);
+//        auth.userDetailsService(userDetailService).passwordEncoder(passwordEncoder());
 //        return auth.build();
 //    }
 
