@@ -29,7 +29,7 @@ public class FindIdDto {
     @Pattern(regexp = "[0-9]{6}", message = "인증번호는 6자리 숫자입니다.", groups = ValidationGroups.PatternGroup.class)
     private String authNum;
 
-    public String getNum() {
+    public String getPhoneNum() {
         return this.phoneNum1 + this.getPhoneNum2() + this.getPhoneNum3();
     }
 

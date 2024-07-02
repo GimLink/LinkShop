@@ -276,4 +276,61 @@ public class MemberController {
         return "redirect:/";
 
     }
+
+    @PostMapping("/member/findId/sendMessage")
+    @ApiOperation(value = "아이디 찾기", notes = "인증번호 전송")
+    public @ResponseBody String findIdPost(@Validated(ValidationSequence.class) FindIdDto findIdDto, BindingResult errors) throws Exception {
+
+        if (errors.hasErrors()) {
+            return commonService.getErrorMessage(errors);
+        }
+
+        String phoneNum = findIdDto.getPhoneNum();
+        int authNum = commonService.randomAuthNum();
+
+        redisService.setAuthNo(phoneNum, authNum);
+        messageService.sendMessage(phoneNum, authNum);
+        return "success";
+    }
+
+    @PostMapping("/member/findIdauthNum")
+    @ApiOperation(value = "아이디 찾기시 인증번호 비교", notes = "아이디 찾기")
+    public @ResponseBody String findIdAuth(@Validated(ValidationSequence.class) FindIdDto findIdDto, BindingResult errors, HttpSession session) throws Exception {
+
+        if (errors.hasErrors()) {
+            return commonService.getErrorMessage(errors);
+        }
+
+        boolean result = memberService.checkAuthNum(findIdDto.getPhoneNum(), findIdDto.getAuthNum());
+
+        if (!result) {
+            return "fail";
+        }
+
+        session.setAttribute("phoneNum", findIdDto.getPhoneNum());
+        memberService.setAuthCheck(findIdDto.getPhoneNum());
+        return "success";
+    }
+
+    @PostMapping("/member/findId/findIdResult")
+    @ApiOperation(value = "인증여부 확인 후 아이디 제공", notes = "아이디 찾기")
+    public String findId(HttpSession session, Model model) {
+
+        String phoneNum = (String) session.getAttribute("phoneNum");
+        boolean result = redisService.confirmPhoneCheck(phoneNum);
+
+        if (result) {
+
+            List<String> userIdList = memberService.findAllByPhoneNum(phoneNum);
+            redisService.deleteKey(phoneNum);
+            redisService.deleteKey(phoneNum + "_check");
+
+            model.addAttribute("userIdList", userIdList);
+            session.removeAttribute("phoneNum");
+
+            return "member/member_findIdResult";
+        } else {
+            return null;
+        }
+    }
 }
