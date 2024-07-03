@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<!-- 사이드바 -->
+<div id="sidebar-wrapper" th:fragment="adminSidebar">
+  <ul class="sidebar-nav">
+    <li class="sidebar-brand">
+      <a th:href="@{/admin/main}">관리자 페이지</a>
+      <a th:href="@{/}">에게모니</a>
+    </li>
+    <li>
+      <input type="text" class="searchForm" th:value="${itemName}" placeholder="검색" maxlength="100"/>
+      <button type="button" class="searchBtn">검색</button>
+    </li>
+    <br/>
+    <p class="acountbuttons" style="text-align: center;">
+      <span sec:authorize="isAuthenticated()"><a th:href="@{/logout}">로그아웃</a></span>
+    </p>
+    <li>-</li>
+    <br/>
+    <li><a th:href="@{/admin/register}">상품 등록</a></li>
+    <li><a th:href="@{/admin/itemList}">등록된 상품 목록</a></li>
+    <li>-</li>
+    <br/>
+    <li><a th:href="@{/admin/send/orderItem}">상품 배송</a></li>
+    <li><a th:href="@{/admin/orderList}">주문 목록</a></li>
+    <li>-</li>
+    <br/>
+    <li><a th:href="@{/board/freeBoard}">자유게시판</a></li>
+    <br/>
+  </ul>
+</div>
+<!-- /사이드바 -->
+</body>
+</html>

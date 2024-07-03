@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>에게모니</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <link href="/assets/css/common/sidebar.css" rel="stylesheet">
+  <link href="/assets/css/common/paging.css" rel="stylesheet">
+  <link href="/assets/css/common/footer.css" rel="stylesheet">
+</head>
+<body>
+
+<div id="page-wrapper">
+  <div th:replace="~{admin/admin_sidebar :: adminSidebar}">
+  </div>
+  <div id="page-content-wrapper">
+    <div class="container-fluid">
+      <!-- 본문 -->
+      <section>
+        <h1>주문 목록</h1>
+        <form th:action="@{/admin/orderList}" id="search-form" method="get">
+          <div class="form-group">
+            <label class="form-label">주문일자</label>
+            <span>
+                            <input type="date" name="firstDate">~
+                            <input type="date" name="lastDate">
+                      </span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">주문상태</label>
+            <span>
+                            <select name="deliveryStatus">
+                                <option value="whole">전체</option>
+                                <option value="DEPOSIT_READY" th:selected="${#strings.equals( searchDto.deliveryStatus, 'DEPOSIT_READY' )}">입금대기</option>
+                                <option value="DEPOSIT_PRICE_LACK" th:selected="${#strings.equals( searchDto.deliveryStatus, 'DEPOSIT_PRICE_LACK' )}">입금금액부족</option>
+                                <option value="DEPOSIT_SUCCESS" th:selected="${#strings.equals( searchDto.deliveryStatus, 'DEPOSIT_SUCCESS' )}">입금완료</option>
+                                <option value="DELIVERY_READY" th:selected="${#strings.equals( searchDto.deliveryStatus, 'DELIVERY_READY' )}">배송준비중</option>
+                                <option value="DELIVERY_ING" th:selected="${#strings.equals( searchDto.deliveryStatus, 'DELIVERY_ING' )}">배송중</option>
+                                <option value="DELIVERY_COMPLETION" th:selected="${#strings.equals( searchDto.deliveryStatus, 'DELIVERY_COMPLETION' )}">배송완료</option>
+                                <option value="ORDER_CANCEL" th:selected="${#strings.equals( searchDto.deliveryStatus, 'ORDER_CANCEL' )}">주문취소</option>
+                            </select>
+                        </span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">선택</label>
+            <span>
+                            <select name="keyType">
+                                <option value="whole">전체</option>
+                                <option value="orderNum" th:selected="${searchDto.keyType} == 'orderNum'">주문번호</option>
+                            </select>
+                            <input type="text" name="keyValue" th:value="${searchDto.keyValue}" class="search-input">
+                        </span>
+          </div>
+          <div class="search-submit-box">
+            <input type="submit" class="search-submit" value="검색">
+          </div>
+        </form>
+        <div class="order-box">
+          <table class="order-table">
+            <colgroup>
+              <col width="15%"/>
+              <col width="10%"/>
+              <col width="20%"/>
+              <col width="10%"/>
+              <col width="15%"/>
+              <col width="10%"/>
+              <col width="10%"/>
+              <col width="15%"/>
+            </colgroup>
+            <thead>
+            <tr>
+              <th>주문번호</th>
+              <th>구매자</th>
+              <th>주문정보</th>
+              <th>결제금액</th>
+              <th>결제방식</th>
+              <th>입금일자</th>
+              <th>상태</th>
+              <th>변경</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="orderItem : ${orderItems}" th:attr="data-orderItemId=${orderItem.id}">
+              <td th:text="${orderItem.order.orderNum}"></td>
+              <td th:text="${orderItem.order.delivery.deliveryAddress.customerName}"></td>
+              <td th:text="${orderItem.item.itemName}"></td>
+              <td th:text="${orderItem.totalPrice}"></td>
+              <td th:text="${orderItem.order.payType.getTitle}"></td>
+              <td th:text="${#temporals.format(orderItem.order.depositDate, 'yyyy.MM.dd HH:mm')}"></td>
+              <td>
+                <select name="changeDeliveryStatus" >
+                  <option value="DEPOSIT_READY" th:selected="${#strings.equals( orderItem.deliveryStatus.getValue, '입금대기' )}">입금대기</option>
+                  <option value="DEPOSIT_PRICE_LACK" th:selected="${#strings.equals( orderItem.deliveryStatus.getValue, '입금금액부족' )}">입금금액부족</option>
+                  <option value="DEPOSIT_SUCCESS" th:selected="${#strings.equals( orderItem.deliveryStatus.getValue, '입금완료' )}">입금완료</option>
+                  <option value="DELIVERY_READY" th:selected="${#strings.equals( orderItem.deliveryStatus.getValue, '배송준비중' )}">배송준비중</option>
+                  <option value="DELIVERY_ING" th:selected="${#strings.equals( orderItem.deliveryStatus.getValue, '배송중' )}">배송중</option>
+                  <option value="DELIVERY_COMPLETION" th:selected="${#strings.equals( orderItem.deliveryStatus.getValue, '배송완료' )}">배송완료</option>
+                  <option value="ORDER_CANCEL" th:selected="${#strings.equals( orderItem.deliveryStatus.getValue, '주문취소' )}">주문취소</option>
+                </select>
+              </td>
+              <td>
+                <input type="button" value="변경" class="changestatusbtn">
+              </td>
+            </tr>
+            </tbody>
+          </table>
+          <div class="paging">
+            <a th:href="@{/admin/orderList(page=${page.prevPage},deliveryStatus=${searchDto.deliveryStatus},keyType=${searchDto.keyType},keyValue=${searchDto.keyValue})}">이전</a>
+            <th:block th:each="i : ${#numbers.sequence(page.startPage, page.endPage)}">
+              <a th:href="@{/admin/orderList(page=${i},deliveryStatus=${searchDto.deliveryStatus},keyType=${searchDto.keyType},keyValue=${searchDto.keyValue})}" th:classappend="${page.curPage} == ${i} ? 'here'" th:text="${i}"></a>
+            </th:block>
+            <a th:href="@{/admin/orderList(page=${page.nextPage},deliveryStatus=${searchDto.deliveryStatus},keyType=${searchDto.keyType},keyValue=${searchDto.keyValue})}">다음</a>
+          </div>
+        </div>
+      </section>
+      <footer th:replace="~{common/footer :: footer}">
+      </footer>
+      <!-- /본문 -->
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-latest.min.js"></script>
+<script src="/assets/js/admin/admin_orderList.js"></script>
+<script src="/assets/js/common/common.js"></script>
+</body>
+</html>
