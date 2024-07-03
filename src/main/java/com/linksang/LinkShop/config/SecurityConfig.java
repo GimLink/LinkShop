@@ -35,7 +35,7 @@ public class SecurityConfig {
                         "/member/findId/sendMessage", "/member/findId/authNum", "/member/findId/findIdResult", "image/**").permitAll()
                 .requestMatchers("/kakao/login", "/join", "/login").permitAll()
                 .requestMatchers("/mypage/**", "/member/**", "/kakao/**", "/cart/**", "/order/**", "/board/write/**", "/success").authenticated()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
+                .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/**").permitAll());
 
 
