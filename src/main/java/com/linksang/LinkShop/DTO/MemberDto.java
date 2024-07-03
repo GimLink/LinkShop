@@ -19,6 +19,6 @@ public class MemberDto {
     private Role role;
     private Sns sns;
     private String phoneNum;
-    private LocalDateTime createDate;
+    private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 }
