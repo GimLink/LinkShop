@@ -2,21 +2,24 @@ package com.linksang.LinkShop.controller;
 
 import com.linksang.LinkShop.DTO.*;
 import com.linksang.LinkShop.enums.DeliveryStatus;
+import com.linksang.LinkShop.enums.Role;
 import com.linksang.LinkShop.repository.ItemRepository;
 import com.linksang.LinkShop.service.*;
 import com.linksang.LinkShop.util.CommonService;
 import com.linksang.LinkShop.util.PaginationShowSizeTen;
+import com.linksang.LinkShop.util.ValidationSequence;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import java.io.IOException;
 import java.util.List;
 
 
@@ -123,5 +126,37 @@ public class AdminController {
         return "success";
     }
 
+    @PostMapping("/admin/send/orderItem")
+    @ApiOperation(value = "운송장 번호 입력후 상품 배송 처리", notes = "상품 배송")
+    public @ResponseBody String deliveryItem(Long orderItemId, String orderNUm, String wayBillNum) {
 
+        boolean result = orderItemService.existsOrderItem(orderNUm, orderItemId);
+        if (!result) {
+            return "fail";
+        }
+
+        orderItemService.saveWayBillNum(orderItemId, wayBillNum);
+        return "success";
+    }
+
+    @PostMapping("/admin/item/register")
+    @ApiOperation(value = "관리자 페이지에서 상품 등록")
+    public @ResponseBody String itemSave(MultipartHttpServletRequest mtfRequest, @Validated(ValidationSequence.class) ItemDto itemDto, BindingResult errors) throws IOException {
+
+        if (errors.hasErrors()) {
+            return commonService.getErrorMessage(errors);
+        } else if (!security.checkHasRole(Role.ADMIN.getValue())) {
+            return "role";
+        }
+
+        itemService.saveItem(mtfRequest, itemDto);
+        return "success";
+    }
+
+    @DeleteMapping("/admin/item/delete")
+    @ApiOperation(value = "관리자페이지에서 상품 삭제")
+    public @ResponseBody String itemDelete (@RequestParam List <Long> itemIdList) {
+        itemRepository.deleteAllById(itemIdList);
+        return "success";
+    }
 }
