@@ -1,19 +1,30 @@
 package com.linksang.LinkShop.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.linksang.LinkShop.DTO.AddressDto;
 import com.linksang.LinkShop.DTO.CallbackPayload;
 import com.linksang.LinkShop.DTO.OrderItemDto;
+import com.linksang.LinkShop.entity.Delivery;
+import com.linksang.LinkShop.entity.Order;
+import com.linksang.LinkShop.entity.OrderPaymentInformation;
+import com.linksang.LinkShop.enums.DeliveryStatus;
+import com.linksang.LinkShop.enums.PayType;
 import com.linksang.LinkShop.enums.TossPayments;
 import com.linksang.LinkShop.exception.ParameterNotfoundException;
 import com.linksang.LinkShop.service.CartService;
 import com.linksang.LinkShop.service.OrderService;
 import com.linksang.LinkShop.util.CommonService;
+import com.linksang.LinkShop.util.ValidationSequence;
 import io.swagger.annotations.ApiOperation;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -29,7 +40,7 @@ public class OrderController {
     private final CommonService commonService;
 
     @GetMapping("/order/checkout")
-    @ApiOperation(value = "주문 페이지로 이동", notes = "문제 방생해서 나갔다가 결제중이던 주문페이지로 다시 이동해야 할 때")
+    @ApiOperation(value = "주문 페이지로 이동", notes = "문제 발생해서 나갔다가 결제중이던 주문페이지로 다시 이동해야 할 때")
     public String checkoutPage(HttpSession session, Model model) {
 
         if (session.getAttribute("orderNum") == null) {
@@ -94,5 +105,48 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/order/virtualAccount")
+    @ApiOperation(value = "가상계좌 결제")
+    public @ResponseBody String saveAddressDto(@Validated(ValidationSequence.class) AddressDto addressDto, BindingResult errors, String payMethod, HttpSession session) {
 
+        PayType payType = PayType.findByPayType(payMethod);
+
+        if (payType.getTitle().equals("없음")) {
+            return "fail";
+        } else if (errors.hasErrors()) {
+            return commonService.getErrorMessage(errors);
+        }
+
+        session.setAttribute("addressDto", addressDto);
+        session.setAttribute("payType", payType);
+        return "success";
+    }
+
+    @RequestMapping("/success")
+    @ApiOperation(value = "토스페이먼츠 가상계좌 결제")
+    public String confirmPayment(@RequestParam String paymentKey, @RequestParam String orderId, @RequestParam int amount,
+                                 Model model, HttpSession session) throws Exception {
+
+        //토스 가상계좌 승인 요청
+        ResponseEntity<JsonNode> responseEntity = orderService.tossPayment(paymentKey, orderId, amount);
+
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+
+            OrderPaymentInformation paymentInfo = orderService.getVirtualAccountInfo(responseEntity.getBody());
+            Delivery delivery = new Delivery();
+            delivery.setDeliveryStatus(DeliveryStatus.DEPOSIT_READY);
+
+            String orderNum = orderService.doOrder(session, paymentInfo, delivery);
+
+            Order order = orderService.findByOrderNum(orderNum);
+            model.addAttribute(orderService.getModelPayInfo(order, model));
+
+            return "order/order_success";
+        } else {
+            JsonNode failNode = responseEntity.getBody();
+            model.addAttribute("message", failNode.get("message").asText());
+            model.addAttribute("code", failNode.get("code").asText());
+            return "order/order_fail";
+        }
+    }
 }
