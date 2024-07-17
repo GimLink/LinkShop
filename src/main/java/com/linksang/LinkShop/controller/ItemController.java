@@ -1,15 +1,14 @@
 package com.linksang.LinkShop.controller;
 
-import com.linksang.LinkShop.DTO.ItemDto;
-import com.linksang.LinkShop.DTO.ItemImageDto;
-import com.linksang.LinkShop.DTO.ItemQnADto;
-import com.linksang.LinkShop.DTO.ItemQnAReplyDto;
+import com.linksang.LinkShop.DTO.*;
 import com.linksang.LinkShop.entity.Item;
+import com.linksang.LinkShop.entity.Member;
+import com.linksang.LinkShop.enums.Role;
 import com.linksang.LinkShop.repository.ReviewRepository;
 import com.linksang.LinkShop.service.*;
 import com.linksang.LinkShop.util.CommonService;
-import com.linksang.LinkShop.util.PaginationShowSizeTen;
 import com.linksang.LinkShop.util.PaginationShowSizeThree;
+import com.linksang.LinkShop.util.ValidationSequence;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -17,11 +16,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 import retrofit2.http.Path;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -100,5 +100,79 @@ public class ItemController {
         model.addAttribute("qnaReplyList", qnaReplyList);
 
         return "item/tab/tab_qna";
+    }
+
+    @PostMapping("/item/qna/send")
+    @ApiOperation(value = "Q&A저장")
+    public @ResponseBody String saveItemQnA(@Validated(ValidationSequence.class) ItemQnADto qnaDto, BindingResult errors,
+                                            Long itemId) {
+        if (errors.hasErrors()) {
+            return commonService.getErrorMessage(errors);
+        } else if (!securityService.isAuthenticated()) {
+            return "login";
+        }
+
+        qnaService.save(qnaDto, itemId);
+        return "success";
+    }
+
+    @PostMapping("/item/reply/send")
+    @ApiOperation(value = "QnA답글 저장")
+    public @ResponseBody String saveItemQnaReply(@Validated(ValidationSequence.class) ItemQnAReplyDto replyDto, BindingResult errors,
+                                                 Long itemId, Long qnaId) {
+        if (errors.hasErrors()) {
+            return commonService.getErrorMessage(errors);
+        } else if (!securityService.isAuthenticated()) {
+            return "login";
+        } else if (!securityService.checkHasRole(Role.ADMIN.getValue())) {
+            return "role";
+        }
+
+        qnAReplyService.save(replyDto, itemId, qnaId);
+        return "success";
+    }
+
+    @PostMapping("/item/review/write")
+    @ApiOperation(value = "리뷰 작성")
+    public @ResponseBody String reviewWrite(@Validated(ValidationSequence.class) ReviewDto reviewDto, BindingResult errors,
+                                            Long itemId, Principal principal) {
+
+        if (errors.hasErrors()) {
+            return commonService.getErrorMessage(errors);
+        } else if (!securityService.isAuthenticated()) {
+            return "-1";
+        }
+
+        Item item = itemService.findById(itemId);
+        Member member = memberService.getCurrentMember();
+        boolean buyResult = reviewRepository.existsByItemAndMember(item, member);
+
+        if (buyResult) { // true = 이미 리뷰 작성
+            return "-2";
+        } else if (!memberService.existItem(item, principal.getName())) { // 상품을 구매 안했다면
+            return "-3";
+        }
+
+        reviewService.saveReview(reviewDto, itemId);
+        return "0";
+    }
+
+    @GetMapping("/item/reviewList/get")
+    @ApiOperation(value = "리뷰 반환", notes = "ajax")
+    public String getReviewList(@RequestParam(name = "itemId") Long itemId,
+                                @RequestParam(name = "lastReviewId", required = false) Long lastReviewId,
+                                @RequestParam(name = "sort", required = false, defaultValue = "recent") String sort,
+                                @RequestParam(name = "more", required = false) String more, Model model) {
+
+        List<ReviewDto> reviewList = reviewService.searchAll(itemId, lastReviewId, sort);
+        Long reviewSize = reviewService.countByItem(itemService.findById(itemId));
+        lastReviewId = reviewService.getLastReviewId(reviewList, lastReviewId, sort);
+
+        model.addAttribute("reviewList", reviewList);
+        model.addAttribute("reviewSize", reviewSize);
+        model.addAttribute("lastReviewId", lastReviewId);
+
+        if(more != null) return "item/tab/tab_reviewMore";
+        return "item/tab/tab_review";
     }
 }
