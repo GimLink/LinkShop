@@ -1,0 +1,279 @@
+
+.main-image-title {
+
+    text-align:center;
+    display:table;
+    width: 360px;
+    height: 450px;
+}
+
+.main-image {
+
+    width : 360px;
+    height : 450px;
+
+}
+
+.main-image-div {
+
+    display:table-cell;
+    vertical-align: middle
+}
+
+
+.tabs_wrap {
+
+    display: table;
+    border: 1px solid black;
+    border-collapse : collapse;
+    margin-top: 100px;
+    margin-bottom : 40px;
+    margin-left : 12px;
+    width: 97.6%;
+}
+
+.tab_default {
+
+    border: 1px solid #dadada;
+    width : 200px;
+    height : 64px;
+    display: table-cell;
+    text-align: center;
+    vertical-align : middle;
+    border-bottom-color : black;
+    cursor : pointer;
+    font-size : 16px;
+
+}
+
+.tab_default.tab_active {
+
+    border-color : black;
+    border-bottom-color: transparent;
+    border-style: double;
+}
+
+
+/* 장바구니, 바로구매  */
+
+.details_btns .cart_add_btn{
+
+    border: 1px solid #dadada;
+    width : 200px;
+    height : 64px;
+    display: table-cell;
+    text-align: center;
+    vertical-align : middle;
+    border-bottom-color : black;
+    cursor : pointer;
+    font-size : 16px;
+    background-color : #525257;
+    color : white;
+    text-decoration:none;
+}
+
+.details_btns .order_btn {
+
+    border: 1px solid #dadada;
+    width : 200px;
+    height : 64px;
+    display: table-cell;
+    text-align: center;
+    vertical-align : middle;
+    border-bottom-color : black;
+    cursor : pointer;
+    font-size : 16px;
+    background-color : black;
+    color : white;
+    text-decoration:none;
+}
+
+
+/* 상품 옵션  */
+.item_select_box {
+
+    padding-top: 130px;
+}
+
+.item_select{
+    margin-bottom: 10px;
+}
+
+/* 선택 상품 삭제  버튼 */
+.btn_del_option{
+
+    top: 24px;
+    right: 24px;
+    font-size: x-large;
+}
+
+.btn_del_option{
+
+    position: absolute;
+    top: 20px;
+    right: 16px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+
+/* 선택한 상품 정보 */
+.detail_selected_options {
+    position: relative;
+    padding: 20px 16px;
+    background: #f3f3f7;
+    margin-top: 36px;
+}
+
+.detail_selected_options .wrap_quantity_price {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    margin-top: 32px;
+}
+
+/* 상품 수량 버튼 */
+.detail_selected_options .wrap_quantity_price .quantity input {
+    display: block;
+    float: left;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    font-size: 16px;
+    text-align: center;
+    background-color: #fff;
+    border: 1px solid #ebeef2;
+    border-radius: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+
+.detail_selected_options .goods {
+    display: block;
+    margin-right: 34px;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    word-break: break-all;
+}
+
+.detail_selected_options .goods {
+    font-size: 18px;
+    line-height: 27px;
+}
+
+/* 상품 옵션 가격 */
+.detail_selected_options .wrap_quantity_price .price_text {
+    font-size: 22px;
+    line-height: 24px;
+}
+
+.detail_selected_options .wrap_quantity_price .price_text {
+    display: table-cell;
+    width: auto;
+    padding: 5px 0 5px 10px;
+    max-width: calc(100% - 110px);
+    font-weight: 700;
+    font-style: normal;
+    text-align: right;
+    word-break: break-all;
+    vertical-align: middle;
+}
+
+/* 상품정보 */
+
+.item_box {
+
+    text-align: center;
+}
+
+.item_explanation {
+
+    width: 600px;
+    font-size: 22px;
+    display: inline-block;
+    padding-top: 150px;
+    padding-bottom: 70px;
+}
+
+.item_details_info{
+
+    padding-bottom: 150px;
+}
+
+/* 모델 정보 */
+.item_model_tag {
+
+    font-size: 20px;
+}
+.item_model {
+
+    font-size: 15px;
+}
+
+/* 옵션 정보 */
+.item_option_tag {
+    font-size: 20px;
+}
+
+.item_option {
+
+    font-size: 15px;
+}
+
+.item_image{
+
+    width: 600px;
+    height : 600px;
+}
+
+
+/* 최종 상품 금액 */
+.details_price{
+    margin-top: 32px;
+}
+
+.details_price{
+
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+
+.details_price dl{
+
+    display: table-row;
+}
+
+.details_price dl dt{
+
+    width: 167px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 19px;
+}
+
+.details_price dl dd{
+
+    font-size: 30px;
+    line-height: 36px;
+    width: auto;
+    text-align: right;
+    font-weight: 700;
+    color: #d3a164;
+    word-break: break-all;
+}
+
+.details_price dl dd{
+
+    display: table-cell;
+    vertical-align: middle;
+}
