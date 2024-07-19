@@ -41,7 +41,7 @@ public class ItemController {
 
     @GetMapping("/category/{category}")
     @ApiOperation(value = "카테고리별 상품 반환")
-    public String itemListPage(@PathVariable String category,
+    public String itemListPage(@PathVariable(name = "category") String category,
                                @RequestParam(name = "lastId", required = false) Long lastId,
                                @RequestParam(name = "more", required = false) String more, Model model) {
 
@@ -60,7 +60,7 @@ public class ItemController {
 
     @GetMapping("/items/{id}")
     @ApiOperation(value = "상품 상세보기")
-    public String itemDetails(@PathVariable Long id, Model model) {
+    public String itemDetails(@PathVariable(name = "id") Long id, Model model) {
 
         Item item = itemService.findById(id);
         ItemDto itemDto = mapper.map(item, ItemDto.class);
