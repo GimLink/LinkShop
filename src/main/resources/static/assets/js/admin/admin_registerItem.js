@@ -29,10 +29,10 @@ $(function(){
             enctype : 'multipart/form-data',
             data : formData,
             contentType : false,
-            processData : false,
-            beforeSend : function(xhr){
-                xhr.setRequestHeader(csrfHeader, csrfToken);
-            }
+            processData : false
+            // beforeSend : function(xhr){
+            //     xhr.setRequestHeader(csrfHeader, csrfToken);
+            // }
         }).done(function(result){
             if(result === "success"){
                 alert("상품 등록에 성공하였습니다.")
