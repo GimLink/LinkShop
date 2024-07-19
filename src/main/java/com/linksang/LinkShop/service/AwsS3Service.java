@@ -19,7 +19,7 @@ public class AwsS3Service {
 
     private final AmazonS3Client amazonS3Client;
 
-    @Value("${cloud.aws.s3.bucket")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
     
     public String upload(MultipartFile uploadFile, String fileName) throws IOException {
@@ -27,7 +27,8 @@ public class AwsS3Service {
     }
 
     private String putS3(MultipartFile uploadFile, String fileName) throws IOException{
-        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile.getInputStream(), null));
+        amazonS3Client.putObject(bucket, fileName, uploadFile.getInputStream(), null);
+//        amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, uploadFile.getInputStream(), null));
 
         return amazonS3Client.getUrl(bucket, fileName).toString();
     }
