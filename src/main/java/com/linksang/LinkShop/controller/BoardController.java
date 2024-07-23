@@ -18,6 +18,7 @@ import com.linksang.LinkShop.util.PaginationShowSizeTen;
 import com.linksang.LinkShop.util.ValidationSequence;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -226,9 +227,67 @@ public class BoardController {
 
         BoardReComment reComment = boardReCommentService.findById(postDto.getId());
         Member member = reComment.getMember();
-        if(!member.getUserId().equals(principal.getName())) return "role";
+        if (!member.getUserId().equals(principal.getName())) return "role";
 
         boardReCommentService.updateReComment(reComment.getId(), postDto);
+        return "success";
+    }
+
+    @PatchMapping("/board/update/hide/{boardId}")
+    @ApiOperation(value = "게시글 공개 여부 변경")
+    public @ResponseBody String boardHideUpdate(@PathVariable(name = "boardId") Long boardId, Principal principal) {
+
+        if (!securityService.isAuthenticated()) {
+            return "login";
+        }
+
+        Board board = boardService.findById(boardId);
+        Member member = board.getMember();
+        if (!member.getUserId().equals(principal.getName())) return "role";
+
+        boardService.updateHide(boardId);
+        return "success";
+    }
+
+    @DeleteMapping("/board/delete/{boardId}")
+    @ApiOperation(value = "게시글 삭제")
+    public @ResponseBody String deleteBoard(@PathVariable(name = "boardId") Long boardId, Principal principal) {
+
+        if (!securityService.isAuthenticated()) return "login";
+
+        Board board = boardService.findById(boardId);
+        Member member = board.getMember();
+        if (!member.getUserId().equals(principal.getName())) return "role";
+
+        boardService.deleteById(boardId);
+        return "success";
+    }
+
+    @DeleteMapping("/board/comment")
+    @ApiOperation(value = "댓글 삭제")
+    public @ResponseBody String deleteComment(@RequestParam(name = "commentId") Long commentId, Principal principal) {
+
+        if (!securityService.isAuthenticated()) return "login";
+
+        BoardComment comment = boardCommentService.findById(commentId);
+        Member member = comment.getMember();
+        if (!member.getUserId().equals(principal.getName())) return "role";
+
+        boardCommentService.deleteById(commentId);
+        return "success";
+    }
+
+    @DeleteMapping("/board/reComment")
+    @ApiOperation(value = "대댓글 삭제")
+    public @ResponseBody String deleteReComment(@RequestParam(name = "reCommentId") Long reCommentId, Principal principal) {
+
+        if(!securityService.isAuthenticated()) return "login";
+
+        BoardReComment reComment = boardReCommentService.findById(reCommentId);
+        Member member = reComment.getMember();
+        if(!member.getUserId().equals(principal.getName())) return "role";
+
+        boardReCommentService.deleteById(reCommentId);
         return "success";
     }
 }
