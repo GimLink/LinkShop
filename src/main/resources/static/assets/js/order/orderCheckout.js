@@ -37,9 +37,9 @@ function kakaoPay(address) {
         url : "/kakaoPay/order",
         type : "post",
         data : address,
-        beforeSend : function(xhr){
-            xhr.setRequestHeader(header, token);
-        }
+        // beforeSend : function(xhr){
+        //     xhr.setRequestHeader(header, token);
+        // }
     }).done(function (result) {
         if (result === 'fail') {
             alert("필수정보를 입력해주세요.");

@@ -27,7 +27,7 @@
       </div>
 
       <div class="cart-wrap">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" id="form_csrf_token">
+        <input type="hidden" th:name="${_csrf?.parameterName}" th:value="${_csrf?.token}" id="form_csrf_token">
         <input type="checkbox" class="checkbox-selectall">
         <button class="delete_select_item">선택삭제</button>
         <table class="item-table">
