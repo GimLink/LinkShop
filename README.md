@@ -205,7 +205,7 @@
                 <li>주문상태 변경 기능</li>
                 <li>동적 검색</li>
                 <li>
-                    <img width="735" alt="image" src="https://github.com/user-attachments/assets/771b0601-066e-4feb-a950-6f824ca083d2">
+                    <img width="1468" alt="image" src="https://github.com/user-attachments/assets/6ccee548-6c19-4958-9d27-5fb6118d3c76">
                 </li>
             </ul>
         </li>
