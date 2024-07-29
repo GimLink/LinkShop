@@ -15,13 +15,14 @@
 <h1>사용한 기술스택</h1>
 <div>
     <ul>
-        <li>JAVA11</li>
+        <li>JAVA17</li>
         <li>Spring Boot</li>
         <li>Spring Security</li>
         <li>Spring Data Jpa</li>
         <li>Querydsl</li>
         <li>Thymeleaf</li>
         <li>Mysql</li>
+        <li>Redis</li>
     </ul>
 </div>
 <br/>
